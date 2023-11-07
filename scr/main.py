@@ -33,7 +33,7 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 board_radius = 100
 board_size = calc_num_tiles(board_radius)
-board = [(0, 0, 0, 0, 0) for _ in range(board_size)]
+board = [(index_to_coords(i), (0,0), 0) for i in range(board_size)]
 print(f"Radius: {board_radius} Tiles: {board_size}")
 
 
@@ -55,21 +55,24 @@ def draw_hexagon(surface, x, y, radius, pointUp, colour):
 
 # Math funtion for changing the cell state
 def toggle_cell_state(i, state):
-    board[i] = (board[i][0], board[i][1], board[i][2], board[i][3], state)
+    board[i] = (board[i][0], board[i][1], state)
+
+
+find_i = 0
+print(f"{find_i} --> {index_to_coords(find_i)}")
 
 find_j = 0
 find_k = 0
+print(f"({find_j},{find_k}) --> {coords_to_index(find_j, find_k)}")
 
-print(f"({find_j},{find_k}) --> {map_to_index(find_j, find_k)}")
-
-print(board[0])
-toggle_cell_state(0, 16)
-print(board[0])
+print(board[33])
+toggle_cell_state(33, 16)
+print(board[33])
 
 
 """ Not my code...
 # Function to update the grid and draw cells
-def generate_board(radius):
+def draw_board(radius):
     for row in range(GRID_HEIGHT):
         for col in range(GRID_WIDTH):
             if grid[row][col]:
