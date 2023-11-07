@@ -33,14 +33,13 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 """ ----------------------------------------- Variables ----------------------------------------- """
 
-board_radius = 6
+board_radius = 100
 board_size = calc_num_tiles(board_radius)
 board = [(10, 20, 0) for _ in range(board_size)]
 print(f"Radius: {board_radius} Tiles: {board_size}")
 
 
 """ ----------------------------------------- Custom Funtions ----------------------------------------- """
-
 
 # Define a function to draw a hexagon
 def draw_hexagon(surface, x, y, radius, pointUp, colour):
@@ -61,14 +60,57 @@ def toggle_cell_state(i, state):
     board[i] = (board[i][0], board[i][1], state)
 
 def cell_map(j, k):
-    j = -1 * j
-    l = -j - k
-    ring = max(j, k, l)
-    # We can calc which ring it is in no we just have to figure out what index within the ring it is...
+    if j == 0 and k == 0:
+        i = 0
+    else:
+        l = -j - k
+        abs_j = abs(j)
+        abs_k = abs(k)
+        abs_l = abs(l)
+        ring = max(abs_j, abs_k, abs_l)
 
+        i = calc_num_tiles(ring)
+        if j * k * l == 0: # if this is true the tile lies on an axis
+            if abs_j == abs_l: # 
+                if j > l:
+                    i += 0
+                else:
+                    i += ring * 3
+            elif abs_k == abs_l:
+                if k > l:
+                    i += ring * 5
+                else:
+                    i += ring * 2
+            elif abs_j == abs_k:
+                if j > k:
+                    i += ring
+                else:
+                    i += ring * 4
+            else:
+                return -1
+        else: # if the tile is NOT on an axis
+            if j == ring:
+                i += abs_k
+            elif k * -1 == ring:
+                i += ring + l
+            elif l == ring:\
+                i += ring * 2 + abs_j
+            elif j * -1 == ring:
+                i += ring * 3 + k
+            elif k == ring:
+                i += ring * 4 + abs_l
+            elif l * -1 == ring:
+                i += ring * 5 + j
+    return i
+
+find_j = 0
+find_k = 1
+
+print(f"({find_j},{find_k}) --> {cell_map(find_j, find_k)}")
 
 print(board[0])
 toggle_cell_state(0, 16)
+print(board[0])
 
 """ Not my code...
 # Function to update the grid and draw cells
