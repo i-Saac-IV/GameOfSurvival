@@ -7,11 +7,11 @@
 # colours
 BLACK = (30, 30, 35)
 WHITE = (219, 219, 219)
-GREY = (107, 107, 107)
+GREY = (89, 89, 89)
 
 RED = (146, 20, 12)
 ORANGE = (200, 100, 0)
-YELLOW = (255, 255, 0)
+YELLOW = (186, 170, 50)
 GREEN = (68, 175, 105)
 TEAL = (0, 255, 255)
 BLUE = (0, 0, 255)
@@ -138,5 +138,5 @@ def index_to_coords(i):
                     k = -j - l
                 case _:
                     return -1
-    return (j,k) # uncomment desired coord format
-    # return (j,k,l) # uncomment desired coord format
+    # return (j,k) # uncomment desired coord format
+    return (j,k,l) # uncomment desired coord format

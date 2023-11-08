@@ -16,9 +16,10 @@ random.seed(SEED)
 
 pygame.init()
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Game of Survival')
+width, height = 640, 480
+screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 
+pygame.display.set_caption('Game of Survival')
 
 
 basicFont = pygame.font.SysFont(None, 30)
@@ -31,15 +32,16 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 """ ----------------------------------------- Variables ----------------------------------------- """
 
-board_radius = 100
+board_radius = 50
 board_size = calc_num_tiles(board_radius)
-board = [(index_to_coords(i), (0,0), 0) for i in range(board_size)]
+tileSize = ((math.sqrt(3) * ((height - 50) / math.sqrt(3))) / (board_radius * 3 - 1))
+board = [(index_to_coords(i), random.randint(0,3)) for i in range(board_size)]
 print(f"Radius: {board_radius} Tiles: {board_size}")
 
 
 """ ----------------------------------------- Custom Funtions ----------------------------------------- """
 
-# Define a function to draw a hexagon
+# draw a hexagon
 def draw_hexagon(surface, x, y, radius, pointUp, colour):
     points = []
     for i in range(6):
@@ -52,65 +54,52 @@ def draw_hexagon(surface, x, y, radius, pointUp, colour):
         points.append((xi, yi))
     pygame.draw.polygon(surface, colour, points)
 
+# draw the entire board
+def draw_board():
+    vert = (3 / 2) * tileSize
+    horiz = math.sqrt(3) * tileSize
+    for i in range(board_size):
+        match board[i][1]:
+            case 0: # dead
+                draw_hexagon(screen, (width / 2) + (horiz * board[i][0][0]) + (horiz * board[i][0][1] / 2), (height / 2) + (vert * board[i][0][1]), tileSize, True, GREY)
+            case 1: # alive
+                draw_hexagon(screen, (width / 2) + (horiz * board[i][0][0]) + (horiz * board[i][0][1] / 2), (height / 2) + (vert * board[i][0][1]), tileSize, True, WHITE)
+            case 2: # fungi
+                draw_hexagon(screen, (width / 2) + (horiz * board[i][0][0]) + (horiz * board[i][0][1] / 2), (height / 2) + (vert * board[i][0][1]), tileSize, True, YELLOW)
+            case 3: # virus
+                draw_hexagon(screen, (width / 2) + (horiz * board[i][0][0]) + (horiz * board[i][0][1] / 2), (height / 2) + (vert * board[i][0][1]), tileSize, True, GREEN)
 
-# Math funtion for changing the cell state
-def toggle_cell_state(i, state):
-    board[i] = (board[i][0], board[i][1], state)
-
-
-find_i = 0
-print(f"{find_i} --> {index_to_coords(find_i)}")
-
-find_j = 0
-find_k = 0
-print(f"({find_j},{find_k}) --> {coords_to_index(find_j, find_k)}")
-
-print(board[33])
-toggle_cell_state(33, 16)
-print(board[33])
-
-
-""" Not my code...
-# Function to update the grid and draw cells
-def draw_board(radius):
-    for row in range(GRID_HEIGHT):
-        for col in range(GRID_WIDTH):
-            if grid[row][col]:
-                color = ALIVE_COLOR
-            else:
-                color = DEAD_COLOR
-            pygame.draw.rect(screen, color, pygame.Rect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
-"""
 
 """ ----------------------------------------- Main Loop ----------------------------------------- """
-
-
 
 frames_clock = pygame.time.Clock()
 while True:
 
-    break # stops the loop, for testing funtions quickly
+    # stops the loop, for testing funtions quickly
 
     #inputs:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        #if event.type == pygame.KEYDOWN:
-        if event.type == pygame.KEYUP:
+        if event.type == pygame.VIDEORESIZE:
+            width, height = event.w, event.h
+            screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
+        # if event.type == pygame.KEYUP:
         #if event.type == pygame.MOUSEBUTTONUP:
     
 
     # draw everything:
     
     screen.fill(BLACK)
-    draw_hexagon(screen, 400, 200, 200, False, WHITE)
-    draw_hexagon(screen, 400, 200, 20, True, GREY)
+    draw_board()
     # screen.blit(text_surface, (0,0))
     # screen.blit(surface, (x,y))
     
     pygame.display.update()
     frames_clock.tick(60)
+
