@@ -1,8 +1,8 @@
 
 
 
-
-
+#from main import *
+import math
 
 # colours
 BLACK = (30, 30, 35)
@@ -24,12 +24,9 @@ BROWN = (150, 100, 50)
 
 SEED = 4
 
-# Uses recursion to calculate the number of tiles for a given radius, f(x) = 6 * (x - 1) + f(x - 1)
+# Calculate the number of tiles for a given radius
 def calc_num_tiles(radius):
-    if radius == 1:
-        return 1
-    else:
-        return 6 * (radius - 1) + calc_num_tiles(radius - 1)
+	return (1 + 3 * (radius - 1) * (radius))
 
 # Maps the coords of any given tile to it's index
 def coords_to_index(j, k):
@@ -39,7 +36,7 @@ def coords_to_index(j, k):
         l = -j - k
         abs_j = abs(j)
         abs_k = abs(k)
-        abs_l = abs(l)
+        abs_l = abs(l)	
         ring = max(abs_j, abs_k, abs_l)
         i = calc_num_tiles(ring)
         if j * k * l == 0: # if this is true the tile lies on an axis
@@ -140,3 +137,24 @@ def index_to_coords(i):
                     return -1
     # return (j,k) # uncomment desired coord format
     return (j,k,l) # uncomment desired coord format
+
+
+def xy_to_jkl(xy, w, h, ts):
+	vert = (3 / 2) * ts
+	horiz = math.sqrt(3) * ts
+	k = (xy[1] - (h / 2)) / vert
+	j = (xy[0] - (w / 2) - (horiz * k / 2) / horiz)
+	l = -j - k
+	return (int(j), int(k), int(l))
+
+
+
+#	x, y = xy[0], xy[1]
+#	k = (y - (height / 2)) / vert
+#	j = (x - (width / 2) - (horiz * k / 2) / horiz)
+#	return coords_to_index(j, k)
+	# y = (height / 2) + (vert * k)
+	# x = (width / 2) + (horiz * j) + (horiz * k / 2)
+
+	# k = (y - (h / 2)) / vert
+	# j = (x - (w / 2) - (horiz * k / 2) / horiz)
