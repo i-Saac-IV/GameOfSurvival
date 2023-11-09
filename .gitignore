@@ -3,3 +3,4 @@
 *.s#*
 *.b#*
 __pycache__
+old_code.py

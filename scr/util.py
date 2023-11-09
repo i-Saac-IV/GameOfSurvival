@@ -18,6 +18,9 @@ BLUE = (0, 0, 255)
 PURPLE = (55, 34, 72)
 BROWN = (150, 100, 50)
 
+dead_cell_colour = (80, 50, 20)
+live_cell_colour = (70, 175, 70)
+hex_border_colour = PURPLE
 # BASIC_CELL = 
 # VOID_CELL = 
 # GRID = 
@@ -138,6 +141,16 @@ def index_to_coords(i):
     # return (j,k) # uncomment desired coord format
     return (j,k,l) # uncomment desired coord format
 
+
+def pointy_hex_to_pixel(j, k, tile_size):
+    x = tile_size * (math.sqrt(3) * j  +  math.sqrt(3)/2 * j)
+    y = tile_size * (3/2 * j)
+    return (x, y)
+
+def pixel_to_jk_pointy(x, y, tile_size):
+    j = (math.sqrt(3) / 3 * x - 1 /3 * y) / tile_size
+    k = (2 / 3 * y) / tile_size
+    return (round(j), round(k))
 
 def xy_to_jkl(xy, w, h, ts):
 	vert = (3 / 2) * ts
