@@ -32,7 +32,7 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 """ ----------------------------------------- Variables ----------------------------------------- """
 
-board_radius = 10
+board_radius = 5
 board_size = calc_num_tiles(board_radius)
 board = [[index_to_coords(i), random.randint(0,1)] for i in range(board_size)]
 tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board_radius * 3 - 1))
@@ -53,7 +53,7 @@ def draw_hexagon(surface, x, y, radius, pointUp, colour, jkl):
         yi = y + radius * math.sin(angle)
         points.append((xi, yi))
     pygame.draw.polygon(surface, colour, points)
-    pygame.draw.polygon(surface, PURPLE, points, 1)
+    pygame.draw.polygon(surface, PURPLE, points, 3)
     text_surface = basicFont.render(str(jkl), True, PURPLE)
     # surface.blit(text_surface, (x, y))
 
