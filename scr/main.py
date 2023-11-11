@@ -32,7 +32,7 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 """ ----------------------------------------- Variables ----------------------------------------- """
 
-board_radius = 20
+board_radius = 10
 board_size = calc_num_tiles(board_radius)
 board = [[] for i in range(board_size)]
 board = [{'coords' : index_to_coords(i), 'state' : random.randint(0,1)} for i in range(board_size)]
@@ -40,6 +40,7 @@ tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board
 print(f"Radius: {board_radius} Tiles: {board_size}")
 scroll = 100
 scroll_rate = 5
+DIRECTIONS = ('topright', 'right', 'botright', 'botleft', 'left', 'topleft')
 
 
 """ ----------------------------------------- Custom Funtions ----------------------------------------- """
@@ -58,7 +59,7 @@ def draw_hexagon(surface, x, y, radius, pointUp, colour, jkl):
     pygame.draw.polygon(surface, colour, points)
     pygame.draw.polygon(surface, hex_border_colour, points, 2)
     text_surface = basicFont.render(str(jkl), True, PURPLE)
-    surface.blit(text_surface, (x - int((text_surface.get_width() / 2)), y - int((text_surface.get_height() / 2))))
+    #surface.blit(text_surface, (x - int((text_surface.get_width() / 2)), y - int((text_surface.get_height() / 2))))
 
 # draw the entire board
 def draw_board():
@@ -82,8 +83,8 @@ def draw_board():
 def check_neighbours(coords):
     i = 0
 
-for hex in board:
-    print(hex)
+
+
 
 
 """ ----------------------------------------- Main Loop ----------------------------------------- """
@@ -118,12 +119,6 @@ while True:
                     print(vemjk)
                     vemindex = coords_to_index(vemjk[0], vemjk[1])
 
-                    if board[vemindex]['state'] == 0:
-                        board[vemindex]['state'] = 1
-
-                    elif board[vemindex]['state'] == 1:
-                        board[vemindex]['state'] = 0
-
             case pygame.MOUSEWHEEL:
                 print(scroll)
                 if event.y == 1: #scroll up/in
@@ -131,6 +126,32 @@ while True:
                 elif event.y == -1: #scroll down/out 
                     scroll -= scroll_rate
                 tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board_radius * 3 - 1)) * (scroll / 100)
+
+            case pygame.KEYUP:
+                if event.key == pygame.K_r:
+                    board = [[] for i in range(board_size)]
+                    board = [{'coords' : index_to_coords(i), 'state' : random.randint(0,1)} for i in range(board_size)]
+                if event.key == pygame.K_i:
+                    for hex in board:
+                        alive_neighbours = 0
+
+                        for direction in DIRECTIONS:
+                            neighbour_i = return_neighbour(hex, direction)
+                            if neighbour_i  < board_size:
+                                if board[neighbour_i]['state'] == 1:
+                                    alive_neighbours += 1
+
+                        if alive_neighbours == 3 or  alive_neighbours == 2 and hex['state'] == 1:
+                        #if alive_neighbours == 2:
+                            hex["next_state"] = 1
+
+                        else:
+                            hex["next_state"] = 0
+
+                    #important that it uopdates board all in one go not as it goes
+                    for hex in board:
+                        hex['state'] = hex['next_state']
+
 
 
     # draw everything:

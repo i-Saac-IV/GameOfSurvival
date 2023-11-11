@@ -25,7 +25,7 @@ hex_border_colour = PURPLE
 # VOID_CELL = 
 # GRID = 
 
-SEED = 4
+SEED = 6
 
 # Calculate the number of tiles for a given radius
 def calc_num_tiles(radius):
@@ -159,6 +159,29 @@ def xy_to_jkl(xy, w, h, ts):
 	j = (xy[0] - (w / 2) - (horiz * k / 2) / horiz)
 	l = -j - k
 	return (int(j), int(k), int(l))
+
+def return_neighbour(hex, direction):
+    match direction:
+        case 'topright':
+            return coords_to_index(hex['coords'][0] + 1, hex['coords'][1] - 1)
+
+        case 'right':
+            return coords_to_index(hex['coords'][0] + 1, hex['coords'][1])
+
+        case 'botright':
+            return coords_to_index(hex['coords'][0], hex['coords'][1] + 1)
+
+        case 'botleft':
+            return coords_to_index(hex['coords'][0] - 1, hex['coords'][1] + 1)
+
+        case 'left':
+            return coords_to_index(hex['coords'][0] - 1, hex['coords'][1])
+
+        case 'topleft':
+            return coords_to_index(hex['coords'][0], hex['coords'][1] - 1)
+
+        case _:
+            print("improper direction used in 'return_neighbour' function")
 
 
 
