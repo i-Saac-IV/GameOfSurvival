@@ -32,11 +32,14 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 """ ----------------------------------------- Variables ----------------------------------------- """
 
-board_radius = 5
+board_radius = 20
 board_size = calc_num_tiles(board_radius)
-board = [[index_to_coords(i), random.randint(0,1)] for i in range(board_size)]
+board = [[] for i in range(board_size)]
+board = [{'coords' : index_to_coords(i), 'state' : random.randint(0,1)} for i in range(board_size)]
 tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board_radius * 3 - 1))
 print(f"Radius: {board_radius} Tiles: {board_size}")
+scroll = 100
+scroll_rate = 5
 
 
 """ ----------------------------------------- Custom Funtions ----------------------------------------- """
@@ -62,10 +65,10 @@ def draw_board():
     vert = (3 / 2) * tileSize
     horiz = math.sqrt(3) * tileSize
     for i in range(board_size):
-        x = (width / 2) + (horiz * board[i][0][0]) + (horiz * board[i][0][1] / 2)
-        y = (height / 2) + (vert * board[i][0][1])
-        jkl = (board[i][0][0], board[i][0][1], board[i][0][2])
-        match board[i][1]:
+        x = (width / 2) + (horiz * board[i]['coords'][0]) + (horiz * board[i]['coords'][1] / 2)
+        y = (height / 2) + (vert * board[i]['coords'][1])
+        jkl = (board[i]['coords'][0], board[i]['coords'][1], board[i]['coords'][2])
+        match board[i]['state']:
             case 0: # dead
                 draw_hexagon(screen, x, y, tileSize, True, dead_cell_colour, jkl)
             case 1: # alive
@@ -78,6 +81,10 @@ def draw_board():
 
 def check_neighbours(coords):
     i = 0
+
+for hex in board:
+    print(hex)
+
 
 """ ----------------------------------------- Main Loop ----------------------------------------- """
 
@@ -92,14 +99,17 @@ while True:
             case pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             case pygame.VIDEORESIZE:
                 width, height = event.w, event.h
                 screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
                 tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board_radius * 3 - 1))
+
             case pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+
             case pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     print(pygame.mouse.get_pos())
@@ -107,17 +117,22 @@ while True:
                     vemjk = pixel_to_jk_pointy(mouse_pos[0] - width / 2, mouse_pos[1] - height /2, tileSize)
                     print(vemjk)
                     vemindex = coords_to_index(vemjk[0], vemjk[1])
-                    if board[vemindex][1] == 0:
-                        board[vemindex][1] = 1
-                    elif board[vemindex][1] == 1:
-                        board[vemindex][1] = 0
+
+                    if board[vemindex]['state'] == 0:
+                        board[vemindex]['state'] = 1
+
+                    elif board[vemindex]['state'] == 1:
+                        board[vemindex]['state'] = 0
 
             case pygame.MOUSEWHEEL:
+                print(scroll)
                 if event.y == 1: #scroll up/in
-                    print("up/in")
+                    scroll += scroll_rate
                 elif event.y == -1: #scroll down/out 
-                    print("down/out")
-    
+                    scroll -= scroll_rate
+                tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board_radius * 3 - 1)) * (scroll / 100)
+
+
     # draw everything:
     screen.fill(BLACK)
     draw_board()
