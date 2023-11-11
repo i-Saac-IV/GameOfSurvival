@@ -34,7 +34,6 @@ text_surface = basicFont.render('whatever', True, WHITE)
 
 board_radius = 10
 board_size = calc_num_tiles(board_radius)
-board = [[] for i in range(board_size)]
 board = [{'coords' : index_to_coords(i), 'state' : random.randint(0,1)} for i in range(board_size)]
 tileSize = ((math.sqrt(3) * ((min(height, width) - 60) / math.sqrt(3))) / (board_radius * 3 - 1))
 print(f"Radius: {board_radius} Tiles: {board_size}")
@@ -129,7 +128,6 @@ while True:
 
             case pygame.KEYUP:
                 if event.key == pygame.K_r:
-                    board = [[] for i in range(board_size)]
                     board = [{'coords' : index_to_coords(i), 'state' : random.randint(0,1)} for i in range(board_size)]
                 if event.key == pygame.K_i:
                     for hex in board:
